@@ -50,7 +50,7 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.7.0")
 
 // Cloudinary
-    implementation("com.cloudinary:cloudinary-android:2.9.0")
+   // implementation("com.cloudinary:cloudinary-android:2.9.0")
 
 // RoomDB
     implementation("androidx.room:room-runtime:2.6.1")
@@ -65,7 +65,7 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
     implementation("androidx.compose.material3:material3:1.3.0")
-    implementation("androidx.compose.material3:material3-icons-extended:1.3.0")
+   // implementation("androidx.compose.material3:material3-icons-extended:1.3.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.0")
     implementation("androidx.navigation:navigation-compose:2.8.0")
     implementation(libs.androidx.core.ktx)
