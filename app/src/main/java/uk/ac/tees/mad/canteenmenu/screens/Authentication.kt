@@ -10,7 +10,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.PanoramaFishEye
+import androidx.compose.material.icons.rounded.RemoveRedEye
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -66,7 +70,7 @@ fun Login(onChange: () -> Unit){
                 singleLine = true,
                 shape = RoundedCornerShape(50.dp),
                 trailingIcon = {
-                    Text(if (isPasswordVisible.value) "Hide" else "Show", modifier = Modifier.padding(end = 10.dp).clickable {
+                    Icon(if (isPasswordVisible.value) Icons.Rounded.PanoramaFishEye else Icons.Rounded.RemoveRedEye,contentDescription = null, modifier = Modifier.padding(end = 10.dp).clickable {
                         isPasswordVisible.value = !isPasswordVisible.value
                         }
                     )
@@ -79,6 +83,7 @@ fun Login(onChange: () -> Unit){
             }
             Row(modifier = Modifier.padding(vertical = 10.dp)) {
                 Text("Don't have an account?", modifier = Modifier.padding(vertical = 10.dp))
+                Spacer(modifier = Modifier.padding(horizontal = 10.dp))
                 Text("Sign up", modifier = Modifier.padding(vertical = 10.dp).clickable {
                     onChange()
                 }, fontWeight = FontWeight.Bold)
@@ -127,9 +132,9 @@ fun Signup(onChange: () -> Unit){
                 singleLine = true,
                 shape = RoundedCornerShape(50.dp),
                 trailingIcon = {
-                    Text(if (isPasswordVisible.value) "Hide" else "Show", modifier = Modifier.padding(end = 10.dp).clickable {
+                    Icon(if (isPasswordVisible.value) Icons.Rounded.PanoramaFishEye else Icons.Rounded.RemoveRedEye,contentDescription = null, modifier = Modifier.padding(end = 10.dp).clickable {
                         isPasswordVisible.value = !isPasswordVisible.value
-                    }
+                        }
                     )
                 },
                 visualTransformation =  if (!isPasswordVisible.value) {PasswordVisualTransformation()} else {androidx.compose.ui.text.input.VisualTransformation.None}
@@ -140,6 +145,7 @@ fun Signup(onChange: () -> Unit){
             }
             Row(modifier = Modifier.padding(vertical = 10.dp)) {
                 Text("Already have an account?", modifier = Modifier.padding(vertical = 10.dp))
+                Spacer(modifier = Modifier.padding(horizontal = 10.dp))
                 Text("Log in", modifier = Modifier.padding(vertical = 10.dp).clickable {
                     onChange()
                 }, fontWeight = FontWeight.Bold)

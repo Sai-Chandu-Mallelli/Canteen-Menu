@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     id("org.jetbrains.kotlin.kapt")
     id("com.google.dagger.hilt.android")
+    alias(libs.plugins.google.gms.google.services)
 }
 
 android {
@@ -44,6 +45,8 @@ android {
 dependencies {
     // Hilt
     implementation("com.google.dagger:hilt-android:2.51.1")
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.firestore)
     kapt("com.google.dagger:hilt-compiler:2.51.1")
 
 // Coil for image loading
@@ -64,8 +67,8 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
-    implementation("androidx.compose.material3:material3:1.3.0")
-   // implementation("androidx.compose.material3:material3-icons-extended:1.3.0")
+    implementation("androidx.compose.material3:material3:1.3.2")
+    implementation("androidx.compose.material:material-icons-extended:1.7.8")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.0")
     implementation("androidx.navigation:navigation-compose:2.8.0")
     implementation(libs.androidx.core.ktx)
