@@ -15,10 +15,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.delay
+import uk.ac.tees.mad.canteenmenu.CanteenViewModel
 import uk.ac.tees.mad.canteenmenu.R
 
 @Composable
-fun Splash(navController: NavHostController) {
+fun Splash(navController: NavHostController, viewModel: CanteenViewModel) {
     LaunchedEffect(Unit) {
         delay(2000)
         navController.navigate(Routes.AUTHENTICATION)

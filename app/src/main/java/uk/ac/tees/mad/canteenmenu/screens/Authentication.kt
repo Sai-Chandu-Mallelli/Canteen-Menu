@@ -1,8 +1,12 @@
 package uk.ac.tees.mad.canteenmenu.screens
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,33 +18,61 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.PanoramaFishEye
 import androidx.compose.material.icons.rounded.RemoveRedEye
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import uk.ac.tees.mad.canteenmenu.CanteenViewModel
 import uk.ac.tees.mad.canteenmenu.R
 
 @Composable
-fun Authentication() {
+fun Authentication(viewModel: CanteenViewModel, navController: NavHostController) {
 
-    val loginOrSignup = remember { mutableStateOf(1) }
-    when(loginOrSignup.value){
-        1 -> Login(onChange = { loginOrSignup.value = 2 })
-        2 -> Signup(onChange = { loginOrSignup.value = 1 })
+    val loading = viewModel.loading.value
+    val context = LocalContext.current
+    val loggedIn = viewModel.loggedIn.value
+
+    LaunchedEffect(loggedIn) {
+        if (loggedIn) {
+            navController.navigate(Routes.HOME)
+        }
+    }
+    if (loading) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
+        }
+    } else {
+        val loginOrSignup = remember { mutableStateOf(1) }
+        when (loginOrSignup.value) {
+            1 -> Login(context = context, onChange = { loginOrSignup.value = 2 }, onLogIn = { email, password ->
+                viewModel.logIn(email = email, password = password, context = context)
+                    }
+                )
+            2 -> Signup(context = context, onChange = { loginOrSignup.value = 1 }, onSignUp = { name, email, password ->
+                    viewModel.signUp(name = name, email = email, password = password, context = context)
+                    }
+                )
+        }
     }
 }
 
+
 @Composable
-fun Login(onChange: () -> Unit){
+fun Login(context: Context, onChange: () -> Unit, onLogIn: (email: String, password: String) -> Unit){
     Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
         val email = remember { mutableStateOf("") }
         val password = remember { mutableStateOf("") }
@@ -77,7 +109,13 @@ fun Login(onChange: () -> Unit){
                 },
                 visualTransformation =  if (!isPasswordVisible.value) {PasswordVisualTransformation()} else {androidx.compose.ui.text.input.VisualTransformation.None}
             )
-            Button(onClick = { /*TODO*/ },
+            Button(onClick = {
+                if (email.value.isNotEmpty() && password.value.isNotEmpty()) {
+                    onLogIn(email.value, password.value)
+                }else{
+                    Toast.makeText(context, "Please enter email and password", Toast.LENGTH_SHORT).show()
+                }
+            },
                 modifier = Modifier.padding(vertical = 10.dp, horizontal = 60.dp).fillMaxWidth()) {
                 Text("Login", fontSize = 18.sp)
             }
@@ -93,7 +131,7 @@ fun Login(onChange: () -> Unit){
 }
 
 @Composable
-fun Signup(onChange: () -> Unit){
+fun Signup(context: Context, onChange: () -> Unit, onSignUp: (name: String, email: String, password: String) -> Unit){
     Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
         val name = remember { mutableStateOf("") }
         val email = remember { mutableStateOf("") }
@@ -139,7 +177,13 @@ fun Signup(onChange: () -> Unit){
                 },
                 visualTransformation =  if (!isPasswordVisible.value) {PasswordVisualTransformation()} else {androidx.compose.ui.text.input.VisualTransformation.None}
             )
-            Button(onClick = { /*TODO*/ },
+            Button(onClick = {
+                if (name.value.isNotEmpty() && email.value.isNotEmpty() && password.value.isNotEmpty()) {
+                    onSignUp(name.value, email.value, password.value)
+                }else{
+                    Toast.makeText(context, "Please enter all fields", Toast.LENGTH_SHORT).show()
+                }
+            },
                 modifier = Modifier.padding(vertical = 10.dp, horizontal = 60.dp).fillMaxWidth()) {
                 Text("Sign up", fontSize = 18.sp)
             }
