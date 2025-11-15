@@ -24,6 +24,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -42,16 +43,16 @@ import uk.ac.tees.mad.canteenmenu.R
 @Composable
 fun Authentication(viewModel: CanteenViewModel, navController: NavHostController) {
 
-    val loading = viewModel.loading.value
+    val loading = viewModel.loading.collectAsState()
     val context = LocalContext.current
-    val loggedIn = viewModel.loggedIn.value
+    val loggedIn = viewModel.loggedIn.collectAsState()
 
     LaunchedEffect(loggedIn) {
-        if (loggedIn) {
+        if (loggedIn.value) {
             navController.navigate(Routes.HOME)
         }
     }
-    if (loading) {
+    if (loading.value) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             CircularProgressIndicator()
         }

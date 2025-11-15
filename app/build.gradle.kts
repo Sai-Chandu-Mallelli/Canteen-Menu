@@ -45,6 +45,7 @@ android {
 dependencies {
     // Hilt
     implementation("com.google.dagger:hilt-android:2.57.1")
+    implementation(libs.firebase.database)
     kapt("com.google.dagger:hilt-compiler:2.57.1")
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)

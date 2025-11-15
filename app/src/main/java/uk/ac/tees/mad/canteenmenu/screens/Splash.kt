@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -20,10 +21,17 @@ import uk.ac.tees.mad.canteenmenu.R
 
 @Composable
 fun Splash(navController: NavHostController, viewModel: CanteenViewModel) {
+    val loggedIn = viewModel.loggedIn.collectAsState().value
     LaunchedEffect(Unit) {
         delay(2000)
-        navController.navigate(Routes.AUTHENTICATION)
+        if (!loggedIn) {
+            navController.navigate(Routes.AUTHENTICATION)
+        }else{
+            navController.navigate(Routes.HOME)
+        }
     }
+
+
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Image(painterResource(R.drawable.app_icon), contentDescription = null, modifier = Modifier.size(240.dp).clip(
             RoundedCornerShape(55.dp)
