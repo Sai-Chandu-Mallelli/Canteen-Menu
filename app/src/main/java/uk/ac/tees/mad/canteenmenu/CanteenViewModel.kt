@@ -77,7 +77,6 @@ class CanteenViewModel @Inject constructor(
             }
     }
 
-    /** ✅ Check if a special already exists today; if not, pick one */
     private fun ensureDailySpecial() {
         val menuRef = database.child("menuItems")
 
@@ -111,7 +110,6 @@ class CanteenViewModel @Inject constructor(
         }
     }
 
-    /** 🔄 Fetch menu list into StateFlow for UI */
     fun fetchMenu() {
         val menuRef = database.child("menuItems")
         menuRef.get().addOnSuccessListener { snapshot ->
