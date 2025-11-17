@@ -86,7 +86,7 @@ fun Home(viewModel: CanteenViewModel, navController: NavHostController) {
                         Spacer(modifier = Modifier.width(12.dp))
                         Column {
                             Text(
-                                text = "Food of the Day",
+                                text = "Top Picks for You",
                                 style = MaterialTheme.typography.titleMedium.copy(
                                     color = OrangeDark
                                 )
@@ -99,7 +99,7 @@ fun Home(viewModel: CanteenViewModel, navController: NavHostController) {
                                 )
                             )
                             Text(
-                                text = "₹${special.price}",
+                                text = "$${special.price}",
                                 style = MaterialTheme.typography.bodyMedium.copy(
                                     color = TextSecondary
                                 )
@@ -144,7 +144,7 @@ fun Home(viewModel: CanteenViewModel, navController: NavHostController) {
                                     )
                                 )
                                 Text(
-                                    text = "₹${item.price}",
+                                    text = "$${item.price}",
                                     style = MaterialTheme.typography.bodySmall.copy(
                                         color = OrangeDark
                                     )
