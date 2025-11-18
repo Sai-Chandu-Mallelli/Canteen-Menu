@@ -11,6 +11,7 @@ object Routes{
     const val SPLASH = "splash"
     const val AUTHENTICATION = "authentication"
     const val HOME = "home"
+    const val WALLET = "wallet"
 }
 
 @Composable
@@ -27,6 +28,8 @@ fun navigation(){
         composable(Routes.HOME){
             Home(viewModel, navController)
         }
-
+        composable(Routes.WALLET){
+        //    Wallet{}
+        }
     }
 }
