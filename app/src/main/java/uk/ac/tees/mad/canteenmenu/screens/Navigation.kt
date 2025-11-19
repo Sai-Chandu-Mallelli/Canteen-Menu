@@ -29,7 +29,7 @@ fun navigation(){
             Home(viewModel, navController)
         }
         composable(Routes.WALLET){
-        //    Wallet{}
+            Wallet{}
         }
     }
 }

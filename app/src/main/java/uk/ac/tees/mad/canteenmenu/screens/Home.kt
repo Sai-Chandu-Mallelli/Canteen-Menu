@@ -11,6 +11,7 @@ import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -56,6 +57,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import uk.ac.tees.mad.canteenmenu.CanteenViewModel
@@ -85,7 +87,6 @@ fun Home(viewModel: CanteenViewModel, navController: NavHostController) {
         if (isGranted) {
             prefs.edit().putBoolean(NOTIFICATIONS_ENABLED_KEY, true).apply()
             notificationsEnabled = true
-            // Proceed to check alarm permission and schedule
         } else {
             prefs.edit().putBoolean(NOTIFICATIONS_ENABLED_KEY, false).apply()
             notificationsEnabled = false
@@ -135,7 +136,7 @@ fun Home(viewModel: CanteenViewModel, navController: NavHostController) {
             } else {
                 cancelDailyNotification(context)
             }
-        }) },
+        }, navController) },
         bottomBar = { BottomNavigationBar() },
         containerColor = BackgroundLight
     ) { innerPadding ->
@@ -276,7 +277,6 @@ fun Home(viewModel: CanteenViewModel, navController: NavHostController) {
                     val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
                     context.startActivity(intent)
                     showAlarmPermissionDialog = false
-                    // Try scheduling after returning, though it may require app restart
                     checkAndSchedule()
                 }) {
                     Text("Open Settings")
@@ -296,7 +296,7 @@ fun Home(viewModel: CanteenViewModel, navController: NavHostController) {
 }
 
 @Composable
-fun TopBar(notificationsEnabled: Boolean, onNotificationsToggle: () -> Unit) {
+fun TopBar(notificationsEnabled: Boolean, onNotificationsToggle: () -> Unit, navController: NavController) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -329,6 +329,9 @@ fun TopBar(notificationsEnabled: Boolean, onNotificationsToggle: () -> Unit) {
             modifier = Modifier
                 .padding(horizontal = 10.dp)
                 .size(34.dp)
+                .clickable{
+                    navController.navigate(Routes.WALLET)
+                }
         )
     }
 }

@@ -42,7 +42,6 @@ class NotificationReceiver : BroadcastReceiver() {
             }
         }
 
-        // Schedule next if still enabled
         if (enabled) {
             scheduleDailyNotification(context)
         }

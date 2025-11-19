@@ -4,14 +4,12 @@ import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
 import uk.ac.tees.mad.canteenmenu.data.model.MenuItem
 import javax.inject.Inject
 
@@ -61,7 +59,7 @@ class CanteenViewModel @Inject constructor(
         authentication.createUserWithEmailAndPassword(email, password)
             .addOnSuccessListener { uid ->
                 firebaseFirestore.collection("user").document(uid.user!!.uid)
-                    .set(mapOf("name" to name, "email" to email))
+                    .set(mapOf("name" to name, "email" to email, "balance" to 2000))
                     .addOnSuccessListener {
                         _loading.value = false
                         _loggedIn.value = true
