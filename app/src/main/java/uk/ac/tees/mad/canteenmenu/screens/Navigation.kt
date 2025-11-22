@@ -12,6 +12,7 @@ object Routes{
     const val AUTHENTICATION = "authentication"
     const val HOME = "home"
     const val WALLET = "wallet"
+    const val PROFILE = "profile"
 }
 
 @Composable
@@ -30,6 +31,9 @@ fun navigation(){
         }
         composable(Routes.WALLET){
             Wallet{}
+        }
+        composable(Routes.PROFILE){
+            Profile()
         }
     }
 }

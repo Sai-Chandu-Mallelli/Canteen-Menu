@@ -137,7 +137,7 @@ fun Home(viewModel: CanteenViewModel, navController: NavHostController) {
                 cancelDailyNotification(context)
             }
         }, navController) },
-        bottomBar = { BottomNavigationBar() },
+        bottomBar = { BottomNavigationBar(navController) },
         containerColor = BackgroundLight
     ) { innerPadding ->
         Column(
@@ -337,7 +337,7 @@ fun TopBar(notificationsEnabled: Boolean, onNotificationsToggle: () -> Unit, nav
 }
 
 @Composable
-fun BottomNavigationBar() {
+fun BottomNavigationBar(navController: NavController) {
     NavigationBar(containerColor = OrangePrimary) {
         NavigationBarItem(
             selected = true,
@@ -353,7 +353,7 @@ fun BottomNavigationBar() {
         )
         NavigationBarItem(
             selected = false,
-            onClick = { /* Profile */ },
+            onClick = { navController.navigate(Routes.PROFILE) },
             icon = { Icon(Icons.Default.Person, contentDescription = "Profile") },
             label = { Text("Profile") }
         )
