@@ -7,9 +7,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
-import android.provider.Settings
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -29,14 +26,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material.icons.rounded.Notifications
 import androidx.compose.material.icons.rounded.Wallet
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -48,7 +41,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -72,44 +64,34 @@ import uk.ac.tees.mad.canteenmenu.utils.NotificationReceiver
 import java.util.Calendar
 
 private const val NOTIFICATIONS_ENABLED_KEY = "notifications_enabled"
+private val NOTIFICATION_TIMES = listOf(
+    Pair(9, 0),
+    Pair(17, 0),
+    Pair(20, 0)
+)
 
 @Composable
 fun Home(viewModel: CanteenViewModel, navController: NavHostController) {
     val context = LocalContext.current
     val prefs = remember { context.getSharedPreferences("canteen_prefs", Context.MODE_PRIVATE) }
-    var notificationsEnabled by remember { mutableStateOf(prefs.getBoolean(NOTIFICATIONS_ENABLED_KEY, false)) }
-    var showNotificationPermissionDialog by remember { mutableStateOf(false) }
-    var showAlarmPermissionDialog by remember { mutableStateOf(false) }
-
-    val permissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission()
-    ) { isGranted ->
-        if (isGranted) {
-            prefs.edit().putBoolean(NOTIFICATIONS_ENABLED_KEY, true).apply()
-            notificationsEnabled = true
-        } else {
-            prefs.edit().putBoolean(NOTIFICATIONS_ENABLED_KEY, false).apply()
-            notificationsEnabled = false
-        }
-    }
-
+    val notificationsEnabled by remember { mutableStateOf(prefs.getBoolean(NOTIFICATIONS_ENABLED_KEY, false)) }
     val alarmManager = remember { context.getSystemService(Context.ALARM_SERVICE) as AlarmManager }
 
     fun checkAndSchedule() {
+        if (!notificationsEnabled) return
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(
                     context,
                     Manifest.permission.POST_NOTIFICATIONS
                 ) != PackageManager.PERMISSION_GRANTED
             ) {
-                showNotificationPermissionDialog = true
                 return
             }
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             if (!alarmManager.canScheduleExactAlarms()) {
-                showAlarmPermissionDialog = true
                 return
             }
         }
@@ -118,25 +100,14 @@ fun Home(viewModel: CanteenViewModel, navController: NavHostController) {
     }
 
     LaunchedEffect(notificationsEnabled) {
-        if (notificationsEnabled) {
-            checkAndSchedule()
-        }
+        checkAndSchedule()
     }
 
     val menuItems = viewModel.menuItems.collectAsState().value
     val dailySpecial = viewModel.dailySpecial.collectAsState().value
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        topBar = { TopBar(notificationsEnabled, onNotificationsToggle = {
-            val newEnabled = !notificationsEnabled
-            prefs.edit().putBoolean(NOTIFICATIONS_ENABLED_KEY, newEnabled).apply()
-            notificationsEnabled = newEnabled
-            if (newEnabled) {
-                checkAndSchedule()
-            } else {
-                cancelDailyNotification(context)
-            }
-        }, navController) },
+        topBar = { TopBar(navController) },
         bottomBar = { BottomNavigationBar(navController) },
         containerColor = BackgroundLight
     ) { innerPadding ->
@@ -241,62 +212,10 @@ fun Home(viewModel: CanteenViewModel, navController: NavHostController) {
             }
         }
     }
-
-    if (showNotificationPermissionDialog) {
-        AlertDialog(
-            onDismissRequest = { showNotificationPermissionDialog = false },
-            title = { Text("Notification Permission") },
-            text = { Text("This app needs permission to send notifications to remind you of daily specials.") },
-            confirmButton = {
-                Button(onClick = {
-                    permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-                    showNotificationPermissionDialog = false
-                }) {
-                    Text("Grant Permission")
-                }
-            },
-            dismissButton = {
-                Button(onClick = {
-                    showNotificationPermissionDialog = false
-                    prefs.edit().putBoolean(NOTIFICATIONS_ENABLED_KEY, false).apply()
-                    notificationsEnabled = false
-                }) {
-                    Text("Deny")
-                }
-            }
-        )
-    }
-
-    if (showAlarmPermissionDialog) {
-        AlertDialog(
-            onDismissRequest = { showAlarmPermissionDialog = false },
-            title = { Text("Exact Alarm Permission") },
-            text = { Text("To send notifications at exact times, please enable exact alarms in app settings.") },
-            confirmButton = {
-                Button(onClick = {
-                    val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
-                    context.startActivity(intent)
-                    showAlarmPermissionDialog = false
-                    checkAndSchedule()
-                }) {
-                    Text("Open Settings")
-                }
-            },
-            dismissButton = {
-                Button(onClick = {
-                    showAlarmPermissionDialog = false
-                    prefs.edit().putBoolean(NOTIFICATIONS_ENABLED_KEY, false).apply()
-                    notificationsEnabled = false
-                }) {
-                    Text("Cancel")
-                }
-            }
-        )
-    }
 }
 
 @Composable
-fun TopBar(notificationsEnabled: Boolean, onNotificationsToggle: () -> Unit, navController: NavController) {
+fun TopBar(navController: NavController) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -311,27 +230,13 @@ fun TopBar(notificationsEnabled: Boolean, onNotificationsToggle: () -> Unit, nav
             modifier = Modifier.padding(horizontal = 10.dp)
         )
         Spacer(modifier = Modifier.weight(1f))
-        IconButton(
-            onClick = onNotificationsToggle,
-            modifier = Modifier
-                .padding(horizontal = 10.dp)
-                .size(34.dp)
-        ) {
-            Icon(
-                Icons.Rounded.Notifications,
-                contentDescription = "Toggle Notifications",
-                tint = if (notificationsEnabled) OrangePrimary else TextSecondary
-            )
-        }
         Icon(
             Icons.Rounded.Wallet,
             contentDescription = null,
             modifier = Modifier
                 .padding(horizontal = 10.dp)
                 .size(34.dp)
-                .clickable{
-                    navController.navigate(Routes.WALLET)
-                }
+                .clickable { navController.navigate(Routes.WALLET) }
         )
     }
 }
@@ -366,6 +271,35 @@ fun scheduleDailyNotification(context: Context) {
 
     val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
     val intent = Intent(context, NotificationReceiver::class.java)
+    val now = Calendar.getInstance()
+    var nextTime: Calendar? = null
+    for ((hour, minute) in NOTIFICATION_TIMES) {
+        val candidate = Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, hour)
+            set(Calendar.MINUTE, minute)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+            if (before(now)) {
+                add(Calendar.DAY_OF_MONTH, 1)
+            }
+        }
+        if (nextTime == null || candidate.before(nextTime)) {
+            nextTime = candidate
+            intent.putExtra("notification_hour", hour)
+        }
+    }
+
+    if (nextTime == null) {
+        nextTime = Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, NOTIFICATION_TIMES.first().first)
+            set(Calendar.MINUTE, NOTIFICATION_TIMES.first().second)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+            add(Calendar.DAY_OF_MONTH, 1)
+        }
+        intent.putExtra("notification_hour", NOTIFICATION_TIMES.first().first)
+    }
+
     val pendingIntent = PendingIntent.getBroadcast(
         context,
         0,
@@ -373,28 +307,18 @@ fun scheduleDailyNotification(context: Context) {
         PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
     )
 
-    val calendar = Calendar.getInstance().apply {
-        set(Calendar.HOUR_OF_DAY, 16)
-        set(Calendar.MINUTE, 22)
-        set(Calendar.SECOND, 0)
-        set(Calendar.MILLISECOND, 0)
-    }
-    if (calendar.timeInMillis <= System.currentTimeMillis()) {
-        calendar.add(Calendar.DAY_OF_MONTH, 1)
-    }
-
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
         if (alarmManager.canScheduleExactAlarms()) {
             alarmManager.setExactAndAllowWhileIdle(
                 AlarmManager.RTC_WAKEUP,
-                calendar.timeInMillis,
+                nextTime.timeInMillis,
                 pendingIntent
             )
         }
     } else {
         alarmManager.setExactAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP,
-            calendar.timeInMillis,
+            nextTime.timeInMillis,
             pendingIntent
         )
     }

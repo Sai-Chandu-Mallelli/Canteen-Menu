@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material.icons.rounded.Wallet
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -28,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import uk.ac.tees.mad.canteenmenu.ui.theme.BackgroundLight
 import uk.ac.tees.mad.canteenmenu.ui.theme.CardBackground
 import uk.ac.tees.mad.canteenmenu.ui.theme.OrangeDark
@@ -39,7 +41,8 @@ import uk.ac.tees.mad.canteenmenu.ui.theme.TextSecondary
 @Composable
 fun Wallet(
     balance: Int = 250,
-    onAddAmount: (Int) -> Unit = {}
+    onAddAmount: (Int) -> Unit = {},
+    navController: NavController
 ) {
     Scaffold(
         containerColor = BackgroundLight
@@ -52,9 +55,16 @@ fun Wallet(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
+            Row(modifier = Modifier.fillMaxWidth()) {
+                Icon(
+                    Icons.Rounded.ArrowBackIosNew,
+                    contentDescription = "Back",
+                    modifier = Modifier.padding(16.dp).clickable {
+                        navController.popBackStack()
+                    })
+            }
             Spacer(modifier = Modifier.height(40.dp))
 
-            // 👜 Big Wallet Icon
             Icon(
                 imageVector = Icons.Rounded.Wallet,
                 contentDescription = "Wallet",
@@ -64,7 +74,6 @@ fun Wallet(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            // 💰 Balance Text
             Text(
                 text = "Your Balance",
                 style = MaterialTheme.typography.titleMedium.copy(
@@ -81,7 +90,6 @@ fun Wallet(
 
             Spacer(modifier = Modifier.height(40.dp))
 
-            // ➕ Add Money Section
             Text(
                 text = "Add Amount",
                 style = MaterialTheme.typography.titleMedium.copy(
@@ -92,7 +100,6 @@ fun Wallet(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            // 🔘 Quick Add Buttons
             Row(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 verticalAlignment = Alignment.CenterVertically
@@ -104,7 +111,6 @@ fun Wallet(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            // 📝 Custom Amount
             Card(
                 shape = RoundedCornerShape(12.dp),
                 colors = CardDefaults.cardColors(containerColor = CardBackground),

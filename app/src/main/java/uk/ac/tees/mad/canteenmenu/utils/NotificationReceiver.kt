@@ -1,5 +1,6 @@
 package uk.ac.tees.mad.canteenmenu.utils
 
+
 import android.Manifest
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -29,20 +30,34 @@ class NotificationReceiver : BroadcastReceiver() {
                 }
             }
 
+            val hour = intent.getIntExtra("notification_hour", 9)
+            val (title, message) = when (hour) {
+                9 -> Pair(
+                    "Greab Special Deal!",
+                    "Start your day with our delicious breakfast specials!"
+                )
+                17 -> Pair(
+                    "Are you hungry?",
+                    "Grab a tasty deal from the Canteen Menu!"
+                )
+                else -> Pair(
+                    "Eat and Repeat🔁!",
+                    "Don't miss out the snacks and specials!"
+                )
+            }
+
             val notification = NotificationCompat.Builder(context, "daily_special_channel")
-                .setSmallIcon(android.R.drawable.sym_def_app_icon)
-                .setContentTitle("Daily Special Available!")
-                .setContentText("Check out today's special in the Canteen Menu app!")
+                .setSmallIcon(android.R.drawable.ic_dialog_info)
+                .setContentTitle(title)
+                .setContentText(message)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setAutoCancel(true)
                 .build()
 
             with(NotificationManagerCompat.from(context)) {
-                notify(1, notification)
+                notify(hour, notification) 
             }
-        }
 
-        if (enabled) {
             scheduleDailyNotification(context)
         }
     }
