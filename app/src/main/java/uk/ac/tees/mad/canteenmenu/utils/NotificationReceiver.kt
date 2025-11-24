@@ -55,7 +55,7 @@ class NotificationReceiver : BroadcastReceiver() {
                 .build()
 
             with(NotificationManagerCompat.from(context)) {
-                notify(hour, notification) 
+                notify(hour, notification)
             }
 
             scheduleDailyNotification(context)

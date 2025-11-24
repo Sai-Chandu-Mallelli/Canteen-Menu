@@ -11,6 +11,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import uk.ac.tees.mad.canteenmenu.data.model.MenuItem
+import uk.ac.tees.mad.canteenmenu.data.model.UserData
 import javax.inject.Inject
 
 @HiltViewModel
@@ -32,12 +33,46 @@ class CanteenViewModel @Inject constructor(
     private val _dailySpecial = MutableStateFlow<MenuItem?>(null)
     val dailySpecial: StateFlow<MenuItem?> = _dailySpecial
 
+    private val _userData = MutableStateFlow<UserData?>(null)
+    val userData: StateFlow<UserData?> = _userData
+
     init {
         if (authentication.currentUser != null) {
             _loggedIn.value = true
             ensureDailySpecial()
             fetchMenu()
+            getUserData()
         }
+    }
+
+    fun onAddAmount(context: Context,amount : Double){
+        _loading.value = true
+        val userId = authentication.currentUser?.uid
+        val balance = _userData.value?.balance ?: 0.0
+        firebaseFirestore.collection("user").document(userId!!).update("balance", balance + amount)
+            .addOnSuccessListener {
+                _loading.value = false
+                getUserData()
+                Toast.makeText(context, "Amount added successfully", Toast.LENGTH_SHORT).show()
+            }.addOnFailureListener {
+                _loading.value = false
+                Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    fun getUserData() {
+        val userId = authentication.currentUser?.uid
+        firebaseFirestore.collection("user").document(userId!!).get()
+            .addOnSuccessListener { document ->
+                if (document != null && document.exists()) {
+                    val userData = document.toObject(UserData::class.java)
+                    _userData.value = userData
+                    Log.d("UserData", "User data: $userData")
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.e("UserData", "Error getting user data: ${exception.message}")
+            }
     }
 
     fun logIn(context: Context, email: String, password: String) {
@@ -46,6 +81,7 @@ class CanteenViewModel @Inject constructor(
             .addOnSuccessListener {
                 _loading.value = false
                 _loggedIn.value = true
+                getUserData()
                 Toast.makeText(context, "Logged in successfully", Toast.LENGTH_SHORT).show()
             }
             .addOnFailureListener {
@@ -59,10 +95,11 @@ class CanteenViewModel @Inject constructor(
         authentication.createUserWithEmailAndPassword(email, password)
             .addOnSuccessListener { uid ->
                 firebaseFirestore.collection("user").document(uid.user!!.uid)
-                    .set(mapOf("name" to name, "email" to email, "balance" to 2000))
+                    .set(UserData("", name, email, 2000.00))
                     .addOnSuccessListener {
                         _loading.value = false
                         _loggedIn.value = true
+                        getUserData()
                         Toast.makeText(context, "User created successfully", Toast.LENGTH_SHORT)
                             .show()
                     }.addOnFailureListener {
@@ -93,7 +130,6 @@ class CanteenViewModel @Inject constructor(
             if (specialItem != null) {
                 _dailySpecial.value = specialItem
             } else if (items.isNotEmpty()) {
-                // Pick new special since none exists
                 val randomItem = items.random()
                 menuRef.child(randomItem.key!!).child("isSpecial").setValue(true)
                     .addOnSuccessListener {
