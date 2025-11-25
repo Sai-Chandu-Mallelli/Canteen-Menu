@@ -1,10 +1,13 @@
 package uk.ac.tees.mad.canteenmenu.screens
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import uk.ac.tees.mad.canteenmenu.CanteenViewModel
 
 object Routes{
@@ -14,6 +17,7 @@ object Routes{
     const val WALLET = "wallet"
     const val PROFILE = "profile"
     const val ORDER_HISTORY = "order_history"
+    
 }
 
 @Composable
@@ -39,5 +43,7 @@ fun navigation(){
         composable(Routes.ORDER_HISTORY){
             Orders()
         }
+
+
     }
 }

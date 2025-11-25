@@ -177,6 +177,9 @@ fun Home(viewModel: CanteenViewModel, navController: NavHostController) {
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 6.dp)
+                            .clickable{
+                                navController.navigate(Routes.foodDetails(item.id))
+                            }
                     ) {
                         Row(
                             modifier = Modifier
