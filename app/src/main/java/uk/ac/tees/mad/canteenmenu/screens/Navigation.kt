@@ -13,6 +13,7 @@ object Routes{
     const val HOME = "home"
     const val WALLET = "wallet"
     const val PROFILE = "profile"
+    const val ORDER_HISTORY = "order_history"
 }
 
 @Composable
@@ -34,6 +35,9 @@ fun navigation(){
         }
         composable(Routes.PROFILE){
             Profile(navController = navController)
+        }
+        composable(Routes.ORDER_HISTORY){
+            Orders()
         }
     }
 }

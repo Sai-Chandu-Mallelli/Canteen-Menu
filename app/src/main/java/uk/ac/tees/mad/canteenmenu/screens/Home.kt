@@ -252,7 +252,7 @@ fun BottomNavigationBar(navController: NavController) {
         )
         NavigationBarItem(
             selected = false,
-            onClick = { /* Orders */ },
+            onClick = { navController.navigate(Routes.ORDER_HISTORY) },
             icon = { Icon(Icons.Default.ShoppingCart, contentDescription = "Orders") },
             label = { Text("Orders") }
         )
