@@ -17,7 +17,9 @@ object Routes{
     const val WALLET = "wallet"
     const val PROFILE = "profile"
     const val ORDER_HISTORY = "order_history"
-    
+    const val FOOD_DETAILS = "details/{id}"
+
+    fun foodDetails(id: String) = "details/$id"
 }
 
 @Composable
@@ -43,7 +45,16 @@ fun navigation(){
         composable(Routes.ORDER_HISTORY){
             Orders()
         }
-
+        composable(
+            route = Routes.FOOD_DETAILS,
+            arguments = listOf(navArgument("id") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val id = backStackEntry.arguments?.getString("id")
+            val item = viewModel.menuItems.collectAsState().value.find { it.id == id }
+            item?.let {
+                FoodDetails(it) {}
+            }
+        }
 
     }
 }
