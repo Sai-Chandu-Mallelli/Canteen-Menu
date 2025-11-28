@@ -53,7 +53,7 @@ fun FoodDetails(
                     .height(56.dp)
             ) {
                 Text(
-                    text = "Order Now - ₹${item.price}",
+                    text = "Order Now - $${item.price}",
                     style = MaterialTheme.typography.titleMedium.copy(
                         color = Color.White,
                         fontWeight = FontWeight.Bold
@@ -111,7 +111,7 @@ fun FoodDetails(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = "₹${item.price}",
+                    text = "$${item.price}",
                     style = MaterialTheme.typography.titleMedium.copy(
                         color = OrangeDark,
                         fontWeight = FontWeight.SemiBold
@@ -128,7 +128,7 @@ fun FoodDetails(
                     )
                 )
                 Text(
-                    text = "A delicious ${if (item.isVeg) "vegetarian" else "non-vegetarian"} dish served hot and fresh. Perfect to enjoy with friends in the canteen!",
+                    text = item.description,
                     style = MaterialTheme.typography.bodyMedium.copy(color = TextSecondary)
                 )
             }

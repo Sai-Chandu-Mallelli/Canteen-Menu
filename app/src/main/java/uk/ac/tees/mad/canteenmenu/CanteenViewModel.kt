@@ -4,12 +4,15 @@ import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
+import uk.ac.tees.mad.canteenmenu.data.dao.MenuItemDao
 import uk.ac.tees.mad.canteenmenu.data.model.MenuItem
 import uk.ac.tees.mad.canteenmenu.data.model.UserData
 import javax.inject.Inject
@@ -18,7 +21,8 @@ import javax.inject.Inject
 class CanteenViewModel @Inject constructor(
     private val authentication: FirebaseAuth,
     private val firebaseFirestore: FirebaseFirestore,
-    private val database: DatabaseReference
+    private val database: DatabaseReference,
+    private val menuItemDao: MenuItemDao
 ) : ViewModel() {
 
     private val _loading = MutableStateFlow(false)
@@ -151,6 +155,18 @@ class CanteenViewModel @Inject constructor(
             _menuItems.value = list
         }.addOnFailureListener {
             _menuItems.value = emptyList()
+        }
+    }
+
+    fun storeInDatabase(menuItem: MenuItem){
+        viewModelScope.launch {
+            try {
+                menuItemDao.insertMenuItems(menuItem)
+                val re = menuItemDao.getAllMenuItems()
+
+            } catch (e: Exception) {
+                Log.e("CanteenViewModel", "Error fetching data from Firebase", e)
+            }
         }
     }
 }
