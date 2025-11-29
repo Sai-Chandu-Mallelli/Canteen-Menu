@@ -40,6 +40,10 @@ class CanteenViewModel @Inject constructor(
     private val _userData = MutableStateFlow<UserData?>(null)
     val userData: StateFlow<UserData?> = _userData
 
+    val _orders = MutableStateFlow<List<MenuItem>>(emptyList())
+    val orders: StateFlow<List<MenuItem>> = _orders
+
+
     init {
         if (authentication.currentUser != null) {
             _loggedIn.value = true
@@ -158,14 +162,28 @@ class CanteenViewModel @Inject constructor(
         }
     }
 
-    fun storeInDatabase(menuItem: MenuItem){
+    fun storeInDatabase(context: Context,menuItem: MenuItem){
         viewModelScope.launch {
             try {
                 menuItemDao.insertMenuItems(menuItem)
-                val re = menuItemDao.getAllMenuItems()
-
+                fetchFromDatabase()
+                Toast.makeText(context, "Ordered Successfully", Toast.LENGTH_SHORT).show()
             } catch (e: Exception) {
-                Log.e("CanteenViewModel", "Error fetching data from Firebase", e)
+                Toast.makeText(context, "Error Ordering", Toast.LENGTH_SHORT).show()
+                Log.e("CanteenViewModel", "Error Puttin into database", e)
+            }
+        }
+    }
+
+    fun fetchFromDatabase(){
+        viewModelScope.launch {
+            try {
+                menuItemDao.getAllMenuItems().collect {
+                    _orders.value = it
+                    Log.d("CanteenViewModel", "Data inserted successfully: $it")
+                }
+            } catch (e: Exception) {
+                Log.e("CanteenViewModel", "Error fetching data from Room", e)
             }
         }
     }

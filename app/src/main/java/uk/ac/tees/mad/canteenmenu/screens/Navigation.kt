@@ -52,7 +52,7 @@ fun navigation(){
             val id = backStackEntry.arguments?.getString("id")
             val item = viewModel.menuItems.collectAsState().value.find { it.id == id }
             item?.let {
-                FoodDetails(it) {}
+                FoodDetails(viewModel = viewModel, navController = navController, item = it)
             }
         }
 
