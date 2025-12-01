@@ -43,7 +43,7 @@ fun navigation(){
             Profile(navController = navController)
         }
         composable(Routes.ORDER_HISTORY){
-            Orders()
+            Orders(viewModel, navController)
         }
         composable(
             route = Routes.FOOD_DETAILS,

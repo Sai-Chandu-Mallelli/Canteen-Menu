@@ -108,7 +108,7 @@ fun Home(viewModel: CanteenViewModel, navController: NavHostController) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = { TopBar(navController) },
-        bottomBar = { BottomNavigationBar(navController) },
+        bottomBar = { BottomNavigationBar(navController, Routes.HOME) },
         containerColor = BackgroundLight
     ) { innerPadding ->
         Column(
@@ -244,29 +244,6 @@ fun TopBar(navController: NavController) {
     }
 }
 
-@Composable
-fun BottomNavigationBar(navController: NavController) {
-    NavigationBar(containerColor = OrangePrimary) {
-        NavigationBarItem(
-            selected = true,
-            onClick = { /* Home */ },
-            icon = { Icon(Icons.Default.Home, contentDescription = "Home") },
-            label = { Text("Home") }
-        )
-        NavigationBarItem(
-            selected = false,
-            onClick = { navController.navigate(Routes.ORDER_HISTORY) },
-            icon = { Icon(Icons.Default.ShoppingCart, contentDescription = "Orders") },
-            label = { Text("Orders") }
-        )
-        NavigationBarItem(
-            selected = false,
-            onClick = { navController.navigate(Routes.PROFILE) },
-            icon = { Icon(Icons.Default.Person, contentDescription = "Profile") },
-            label = { Text("Profile") }
-        )
-    }
-}
 
 fun scheduleDailyNotification(context: Context) {
     val prefs = context.getSharedPreferences("canteen_prefs", Context.MODE_PRIVATE)

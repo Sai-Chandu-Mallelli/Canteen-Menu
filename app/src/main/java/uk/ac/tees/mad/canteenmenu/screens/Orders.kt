@@ -23,12 +23,15 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import uk.ac.tees.mad.canteenmenu.CanteenViewModel
 import uk.ac.tees.mad.canteenmenu.data.model.MenuItem
 import uk.ac.tees.mad.canteenmenu.ui.theme.BackgroundLight
 import uk.ac.tees.mad.canteenmenu.ui.theme.CardBackground
@@ -37,39 +40,14 @@ import uk.ac.tees.mad.canteenmenu.ui.theme.OrangePrimary
 import uk.ac.tees.mad.canteenmenu.ui.theme.TextPrimary
 import uk.ac.tees.mad.canteenmenu.ui.theme.TextSecondary
 
-val dummyOrders = listOf(
-    MenuItem(
-        id = "1",
-        name = "Chicken Biryani",
-        price = 120.0,
-        isVeg = false,
-        isSpecial = false,
-        imageUrl = "https://source.unsplash.com/OterGMpkdsM/600x400"
-    ),
-    MenuItem(
-        id = "2",
-        name = "Paneer Butter Masala",
-        price = 130.0,
-        isVeg = true,
-        isSpecial = false,
-        imageUrl = "https://source.unsplash.com/7zTClpLI60c/600x400"
-    ),
-    MenuItem(
-        id = "3",
-        name = "Veggie Burger",
-        price = 80.0,
-        isVeg = true,
-        isSpecial = false,
-        imageUrl = "https://source.unsplash.com/yE9Rq_KGrLI/600x400"
-    )
-)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Orders(
-
-    orders: List<MenuItem> = dummyOrders
+    viewModel : CanteenViewModel,
+    navController : NavController
 ) {
+    val orders = viewModel.orders.collectAsState().value
     Scaffold(
         topBar = {
             TopAppBar(
@@ -77,6 +55,7 @@ fun Orders(
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = OrangePrimary)
             )
         },
+        bottomBar = { BottomNavigationBar(navController, Routes.ORDER_HISTORY) },
         containerColor = BackgroundLight
     ) { innerPadding ->
         Column(

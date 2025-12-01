@@ -40,7 +40,7 @@ class CanteenViewModel @Inject constructor(
     private val _userData = MutableStateFlow<UserData?>(null)
     val userData: StateFlow<UserData?> = _userData
 
-    val _orders = MutableStateFlow<List<MenuItem>>(emptyList())
+    private val _orders = MutableStateFlow<List<MenuItem>>(emptyList())
     val orders: StateFlow<List<MenuItem>> = _orders
 
 
@@ -50,6 +50,7 @@ class CanteenViewModel @Inject constructor(
             ensureDailySpecial()
             fetchMenu()
             getUserData()
+            fetchFromDatabase()
         }
     }
 
