@@ -50,8 +50,6 @@ fun Profile(
     userName: String = "John Doe",
     userEmail: String = "john.doe@example.com",
     onEditProfile: () -> Unit = {},
-    onOrderHistory: () -> Unit = {},
-    onWallet: () -> Unit = {},
     onLogout: () -> Unit = {},
     navController: NavController
 ) {
@@ -131,9 +129,15 @@ fun Profile(
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            ProfileOptionItem("Edit Profile", Icons.Default.Edit, onEditProfile)
-            ProfileOptionItem("Order History", Icons.Default.ShoppingCart, onOrderHistory)
-            ProfileOptionItem("Wallet", Icons.Rounded.Wallet, onWallet)
+            ProfileOptionItem("Edit Profile", Icons.Default.Edit, {
+                navController.navigate(Routes.EDIT_PROFILE)
+            })
+            ProfileOptionItem("Order History", Icons.Default.ShoppingCart, {navController.navigate(Routes.ORDER_HISTORY){
+                popUpTo(0)
+            } })
+            ProfileOptionItem("Wallet", Icons.Rounded.Wallet, {
+                navController.navigate(Routes.WALLET)
+            })
             NotificationOptionItem(
                 title = "Notifications",
                 icon = Icons.Rounded.Notifications,

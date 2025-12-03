@@ -18,8 +18,8 @@ object Routes{
     const val PROFILE = "profile"
     const val ORDER_HISTORY = "order_history"
     const val FOOD_DETAILS = "details/{id}"
-
     fun foodDetails(id: String) = "details/$id"
+    const val EDIT_PROFILE = "edit_profile"
 }
 
 @Composable
@@ -55,6 +55,8 @@ fun navigation(){
                 FoodDetails(viewModel = viewModel, navController = navController, item = it)
             }
         }
-
+        composable(Routes.EDIT_PROFILE){
+            EditProfile(viewModel = viewModel, navController = navController)
+        }
     }
 }
