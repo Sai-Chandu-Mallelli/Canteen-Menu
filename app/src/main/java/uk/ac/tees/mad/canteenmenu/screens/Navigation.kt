@@ -40,7 +40,7 @@ fun navigation(){
             Wallet(viewModel,navController = navController)
         }
         composable(Routes.PROFILE){
-            Profile(navController = navController)
+            Profile(viewModel,navController = navController)
         }
         composable(Routes.ORDER_HISTORY){
             Orders(viewModel, navController)

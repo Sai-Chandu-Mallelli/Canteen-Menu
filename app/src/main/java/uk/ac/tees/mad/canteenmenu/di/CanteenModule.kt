@@ -2,6 +2,7 @@ package uk.ac.tees.mad.canteenmenu.di
 
 import android.content.Context
 import androidx.room.Room
+import com.cloudinary.Cloudinary
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -37,13 +38,23 @@ object CanteenModule {
         return Room.databaseBuilder(
             context,
             AppDatabase::class.java,
-            "app_database"  // Database file name
-        ).build()  // Add .fallbackToDestructiveMigration() if needed for dev
+            "app_database"
+        ).build()
     }
 
     @Provides
     @Singleton
     fun provideMenuItemDao(appDatabase: AppDatabase): MenuItemDao {
         return appDatabase.menuItemDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideCloudinary(): Cloudinary {
+        val config: MutableMap<String, String> = HashMap()
+        config["cloud_name"] = "Teesside"
+        config["api_key"] = "281678982458183"
+        config["api_secret"] = "77nO2JN3hkGXB-YgGZuJOqXcA4Q"
+        return Cloudinary(config)
     }
 }

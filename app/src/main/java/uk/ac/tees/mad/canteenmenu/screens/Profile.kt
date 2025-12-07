@@ -35,6 +35,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
+import uk.ac.tees.mad.canteenmenu.CanteenViewModel
 import uk.ac.tees.mad.canteenmenu.ui.theme.BackgroundLight
 import uk.ac.tees.mad.canteenmenu.ui.theme.CardBackground
 import uk.ac.tees.mad.canteenmenu.ui.theme.OrangeDark
@@ -47,12 +49,10 @@ private const val NOTIFICATIONS_ENABLED_KEY = "notifications_enabled"
 
 @Composable
 fun Profile(
-    userName: String = "John Doe",
-    userEmail: String = "john.doe@example.com",
-    onEditProfile: () -> Unit = {},
-    onLogout: () -> Unit = {},
+    viewModel : CanteenViewModel,
     navController: NavController
 ) {
+    val userData = viewModel.userData.collectAsState().value
     val context = LocalContext.current
     val prefs = remember { context.getSharedPreferences("canteen_prefs", Context.MODE_PRIVATE) }
     var notificationsEnabled by remember { mutableStateOf(prefs.getBoolean(NOTIFICATIONS_ENABLED_KEY, false)) }
@@ -92,9 +92,11 @@ fun Profile(
                 Icon(
                     Icons.Rounded.ArrowBackIosNew,
                     contentDescription = "Back",
-                    modifier = Modifier.padding(16.dp).clickable {
-                        navController.popBackStack()
-                    })
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .clickable {
+                            navController.popBackStack()
+                        })
             }
             Box(
                 modifier = Modifier
@@ -103,25 +105,33 @@ fun Profile(
                     .background(OrangeSecondary),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(
-                    imageVector = Icons.Default.Person,
-                    contentDescription = "Profile Icon",
-                    tint = Color.White,
-                    modifier = Modifier.size(64.dp)
-                )
+                if (!userData?.profilePhoto.isNullOrEmpty()){
+                    AsyncImage(
+                        model = userData.profilePhoto,
+                        contentDescription = "Profile Image",
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }else {
+                    Icon(
+                        imageVector = Icons.Default.Person,
+                        contentDescription = "Profile Icon",
+                        tint = Color.White,
+                        modifier = Modifier.size(64.dp)
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = userName,
+                text = userData?.name?:"John Doe",
                 style = MaterialTheme.typography.headlineSmall.copy(
                     fontWeight = FontWeight.Bold,
                     color = TextPrimary
                 )
             )
             Text(
-                text = userEmail,
+                text = userData?.email?:"john.doe@example.com",
                 style = MaterialTheme.typography.bodyMedium.copy(
                     color = TextSecondary
                 )
@@ -168,7 +178,7 @@ fun Profile(
                     }
                 }
             )
-            ProfileOptionItem("Logout", Icons.Default.ExitToApp, onLogout, isLogout = true)
+            ProfileOptionItem("Logout", Icons.Default.ExitToApp, { /** TODO **/ }, isLogout = true)
             Spacer(modifier = Modifier.height(16.dp))
             Text("The app will show notifications three times in a day at 9:00 AM, 5:00 PM, and 8:00 PM.",
                 style = MaterialTheme.typography.bodySmall.copy( color = TextSecondary), modifier = Modifier.padding( 16.dp) )
