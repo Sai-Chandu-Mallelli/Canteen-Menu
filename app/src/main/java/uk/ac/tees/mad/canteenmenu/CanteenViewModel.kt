@@ -1,20 +1,26 @@
 package uk.ac.tees.mad.canteenmenu
 
 import android.content.Context
+import android.net.Uri
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.cloudinary.Cloudinary
+import com.cloudinary.utils.ObjectUtils
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import uk.ac.tees.mad.canteenmenu.data.dao.MenuItemDao
 import uk.ac.tees.mad.canteenmenu.data.model.MenuItem
 import uk.ac.tees.mad.canteenmenu.data.model.UserData
+import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
@@ -22,7 +28,8 @@ class CanteenViewModel @Inject constructor(
     private val authentication: FirebaseAuth,
     private val firebaseFirestore: FirebaseFirestore,
     private val database: DatabaseReference,
-    private val menuItemDao: MenuItemDao
+    private val menuItemDao: MenuItemDao,
+    private val cloudinary: Cloudinary
 ) : ViewModel() {
 
     private val _loading = MutableStateFlow(false)
@@ -186,6 +193,63 @@ class CanteenViewModel @Inject constructor(
             } catch (e: Exception) {
                 Log.e("CanteenViewModel", "Error fetching data from Room", e)
             }
+        }
+    }
+
+    suspend fun uploadProfileImage(context: Context, imageUri: Uri): String? {
+        return withContext(Dispatchers.IO) {
+            try {
+                when (imageUri.scheme) {
+                    "file" -> {
+                        val file = File(imageUri.path!!)
+                        val result = cloudinary.uploader().upload(file, ObjectUtils.emptyMap())
+                        result["url"] as? String
+                    }
+                    "content" -> {
+                        context.contentResolver.openInputStream(imageUri).use { inputStream ->
+                            if (inputStream != null) {
+                                val result = cloudinary.uploader().upload(inputStream, ObjectUtils.emptyMap())
+                                result["secure_url"] as? String
+                            } else null
+                        }
+                    }
+                    else -> {
+                        Log.e("ProfileUpload", "Unsupported Uri scheme: ${imageUri.scheme}")
+                        null
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("ProfileUpload", "Upload failed: ${e.message}")
+                null
+            }
+        }
+    }
+
+    fun updateUserData(context: Context, imageUri: Uri?, name: String, email: String) {
+        viewModelScope.launch {
+            var uploadedUrl: String? = null
+
+            if (imageUri != null) {
+                uploadedUrl = uploadProfileImage(context, imageUri)
+            }
+
+            val userUpdate = mutableMapOf<String, Any>(
+                "name" to name,
+                "email" to email
+            )
+
+            uploadedUrl?.let { userUpdate["profilePhoto"] = it }
+
+            firebaseFirestore.collection("user")
+                .document(authentication.currentUser!!.uid)
+                .update(userUpdate)
+                .addOnSuccessListener {
+                    getUserData()
+                    Toast.makeText(context, "Profile updated successfully", Toast.LENGTH_SHORT).show()
+                }
+                .addOnFailureListener {
+                    Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
+                }
         }
     }
 }
