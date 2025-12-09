@@ -250,68 +250,58 @@ fun scheduleDailyNotification(context: Context) {
     if (!prefs.getBoolean(NOTIFICATIONS_ENABLED_KEY, false)) return
 
     val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-    val intent = Intent(context, NotificationReceiver::class.java)
-    val now = Calendar.getInstance()
-    var nextTime: Calendar? = null
-    for ((hour, minute) in NOTIFICATION_TIMES) {
-        val candidate = Calendar.getInstance().apply {
+
+    NOTIFICATION_TIMES.forEachIndexed { index, (hour, minute) ->
+        val intent = Intent(context, NotificationReceiver::class.java).apply {
+            putExtra("notification_hour", hour)
+        }
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            index,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val triggerTime = Calendar.getInstance().apply {
             set(Calendar.HOUR_OF_DAY, hour)
             set(Calendar.MINUTE, minute)
             set(Calendar.SECOND, 0)
             set(Calendar.MILLISECOND, 0)
-            if (before(now)) {
+            if (before(Calendar.getInstance())) {
                 add(Calendar.DAY_OF_MONTH, 1)
             }
         }
-        if (nextTime == null || candidate.before(nextTime)) {
-            nextTime = candidate
-            intent.putExtra("notification_hour", hour)
-        }
-    }
 
-    if (nextTime == null) {
-        nextTime = Calendar.getInstance().apply {
-            set(Calendar.HOUR_OF_DAY, NOTIFICATION_TIMES.first().first)
-            set(Calendar.MINUTE, NOTIFICATION_TIMES.first().second)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
-            add(Calendar.DAY_OF_MONTH, 1)
-        }
-        intent.putExtra("notification_hour", NOTIFICATION_TIMES.first().first)
-    }
-
-    val pendingIntent = PendingIntent.getBroadcast(
-        context,
-        0,
-        intent,
-        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-    )
-
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-        if (alarmManager.canScheduleExactAlarms()) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (alarmManager.canScheduleExactAlarms()) {
+                alarmManager.setExactAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP,
+                    triggerTime.timeInMillis,
+                    pendingIntent
+                )
+            }
+        } else {
             alarmManager.setExactAndAllowWhileIdle(
                 AlarmManager.RTC_WAKEUP,
-                nextTime.timeInMillis,
+                triggerTime.timeInMillis,
                 pendingIntent
             )
         }
-    } else {
-        alarmManager.setExactAndAllowWhileIdle(
-            AlarmManager.RTC_WAKEUP,
-            nextTime.timeInMillis,
-            pendingIntent
-        )
     }
 }
 
+
 fun cancelDailyNotification(context: Context) {
     val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-    val intent = Intent(context, NotificationReceiver::class.java)
-    val pendingIntent = PendingIntent.getBroadcast(
-        context,
-        0,
-        intent,
-        PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
-    )
-    alarmManager.cancel(pendingIntent)
+    NOTIFICATION_TIMES.forEachIndexed { index, _ ->
+        val intent = Intent(context, NotificationReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            index, // same request code used in schedule
+            intent,
+            PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        alarmManager.cancel(pendingIntent)
+    }
 }

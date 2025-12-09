@@ -178,7 +178,12 @@ fun Profile(
                     }
                 }
             )
-            ProfileOptionItem("Logout", Icons.Default.ExitToApp, { /** TODO **/ }, isLogout = true)
+            ProfileOptionItem("Logout", Icons.Default.ExitToApp, {
+                viewModel.logOut()
+                navController.navigate(Routes.AUTHENTICATION){
+                    popUpTo(0)
+                }
+            }, isLogout = true)
             Spacer(modifier = Modifier.height(16.dp))
             Text("The app will show notifications three times in a day at 9:00 AM, 5:00 PM, and 8:00 PM.",
                 style = MaterialTheme.typography.bodySmall.copy( color = TextSecondary), modifier = Modifier.padding( 16.dp) )

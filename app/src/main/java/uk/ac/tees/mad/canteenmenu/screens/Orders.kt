@@ -121,7 +121,7 @@ fun OrderCard(item: MenuItem) {
                     )
                 )
                 Text(
-                    text = "₹${item.price}",
+                    text = "$${item.price}",
                     style = MaterialTheme.typography.bodyMedium.copy(color = OrangeDark)
                 )
             }

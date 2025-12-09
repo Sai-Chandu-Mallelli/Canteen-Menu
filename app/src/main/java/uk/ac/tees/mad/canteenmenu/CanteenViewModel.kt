@@ -97,7 +97,10 @@ class CanteenViewModel @Inject constructor(
             .addOnSuccessListener {
                 _loading.value = false
                 _loggedIn.value = true
+                ensureDailySpecial()
+                fetchMenu()
                 getUserData()
+                fetchFromDatabase()
                 Toast.makeText(context, "Logged in successfully", Toast.LENGTH_SHORT).show()
             }
             .addOnFailureListener {
@@ -115,7 +118,10 @@ class CanteenViewModel @Inject constructor(
                     .addOnSuccessListener {
                         _loading.value = false
                         _loggedIn.value = true
+                        ensureDailySpecial()
+                        fetchMenu()
                         getUserData()
+                        fetchFromDatabase()
                         Toast.makeText(context, "User created successfully", Toast.LENGTH_SHORT)
                             .show()
                     }.addOnFailureListener {
@@ -170,6 +176,8 @@ class CanteenViewModel @Inject constructor(
         }
     }
 
+
+
     fun storeInDatabase(context: Context,menuItem: MenuItem){
         viewModelScope.launch {
             try {
@@ -192,6 +200,25 @@ class CanteenViewModel @Inject constructor(
                 }
             } catch (e: Exception) {
                 Log.e("CanteenViewModel", "Error fetching data from Room", e)
+            }
+        }
+    }
+
+    fun makeOrder(context: Context,menuItem: MenuItem) {
+        val price = menuItem.price
+        val balance = _userData.value?.balance
+        val finalBalance = balance?.minus(price)
+        if (finalBalance != null) {
+            if (finalBalance >= 0) {
+                storeInDatabase(context, menuItem)
+                firebaseFirestore.collection("user").document(authentication.currentUser!!.uid)
+                    .update("balance", finalBalance).addOnSuccessListener {
+                        getUserData()
+                    }.addOnFailureListener {
+                        Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
+                    }
+            } else {
+                Toast.makeText(context, "Insufficient Balance", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -251,5 +278,11 @@ class CanteenViewModel @Inject constructor(
                     Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
                 }
         }
+    }
+
+    fun logOut() {
+        authentication.signOut()
+        _loggedIn.value = false
+        _userData.value = null
     }
 }

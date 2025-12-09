@@ -43,16 +43,16 @@ import uk.ac.tees.mad.canteenmenu.R
 @Composable
 fun Authentication(viewModel: CanteenViewModel, navController: NavHostController) {
 
-    val loading = viewModel.loading.collectAsState()
+    val loading = viewModel.loading.collectAsState().value
     val context = LocalContext.current
-    val loggedIn = viewModel.loggedIn.collectAsState()
+    val loggedIn = viewModel.loggedIn.collectAsState().value
 
     LaunchedEffect(loggedIn) {
-        if (loggedIn.value) {
+        if (loggedIn) {
             navController.navigate(Routes.HOME)
         }
     }
-    if (loading.value) {
+    if (loading) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             CircularProgressIndicator()
         }

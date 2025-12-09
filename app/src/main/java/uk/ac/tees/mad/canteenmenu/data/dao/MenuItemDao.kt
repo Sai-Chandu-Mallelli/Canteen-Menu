@@ -10,10 +10,10 @@ import uk.ac.tees.mad.canteenmenu.data.model.MenuItem
 @Dao
 interface MenuItemDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertMenuItems(menuItems:MenuItem)
 
-    @Query("SELECT * FROM menu_items")
+    @Query("SELECT * FROM menu_items ORDER BY dbId ASC")
     fun getAllMenuItems(): Flow<List<MenuItem>>
 
     @Query("DELETE FROM menu_items")

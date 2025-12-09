@@ -53,7 +53,7 @@ fun FoodDetails(
         containerColor = BackgroundLight,
         bottomBar = {
             Button(
-                onClick = { viewModel.storeInDatabase(context,item) },
+                onClick = { viewModel.makeOrder(context,item) },
                 colors = ButtonDefaults.buttonColors(containerColor = OrangePrimary),
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier
