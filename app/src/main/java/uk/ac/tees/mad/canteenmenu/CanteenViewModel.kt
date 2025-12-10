@@ -280,6 +280,17 @@ class CanteenViewModel @Inject constructor(
         }
     }
 
+    fun deleteFromDatabase(item: MenuItem) {
+        viewModelScope.launch {
+            try {
+                menuItemDao.deleteMenuItemById(item.id)
+                fetchFromDatabase()
+            } catch (e: Exception) {
+                Log.e("CanteenViewModel", "Error deleting from Room", e)
+            }
+        }
+    }
+
     fun logOut() {
         authentication.signOut()
         _loggedIn.value = false

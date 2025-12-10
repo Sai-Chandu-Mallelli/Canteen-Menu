@@ -1,6 +1,7 @@
 package uk.ac.tees.mad.canteenmenu.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,9 +15,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.DeleteOutline
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -27,6 +31,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -82,7 +87,7 @@ fun Orders(
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     items(orders) { item ->
-                        OrderCard(item = item)
+                        OrderCard(item = item, viewModel)
                     }
                 }
             }
@@ -91,7 +96,7 @@ fun Orders(
 }
 
 @Composable
-fun OrderCard(item: MenuItem) {
+fun OrderCard(item: MenuItem, viewModel: CanteenViewModel) {
     Card(
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = CardBackground),
@@ -124,6 +129,11 @@ fun OrderCard(item: MenuItem) {
                     text = "$${item.price}",
                     style = MaterialTheme.typography.bodyMedium.copy(color = OrangeDark)
                 )
+            }
+            Box(modifier = Modifier.size(48.dp).clip(RoundedCornerShape(22.dp)).background(Color.Red).clickable{
+                viewModel.deleteFromDatabase(item)
+            }, contentAlignment = Alignment.Center) {
+                Icon(Icons.Rounded.DeleteOutline,contentDescription = null, tint = Color.White)
             }
         }
     }
