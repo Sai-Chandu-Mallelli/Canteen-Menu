@@ -33,7 +33,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import uk.ac.tees.mad.canteenmenu.CanteenViewModel
@@ -134,6 +136,102 @@ fun OrderCard(item: MenuItem, viewModel: CanteenViewModel) {
                 viewModel.deleteFromDatabase(item)
             }, contentAlignment = Alignment.Center) {
                 Icon(Icons.Rounded.DeleteOutline,contentDescription = null, tint = Color.White)
+            }
+        }
+    }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview(showBackground = true, name = "CanteenMenu – Orders Screen")
+@Composable
+fun OrdersScreenPreview() {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Your Orders", color = Color.White) },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFFF6D00))
+            )
+        }
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color(0xFFFFF8F0))
+                .padding(paddingValues)
+        ) {
+            // Sample orders
+            val sampleOrders = listOf(
+                Triple("Margherita Pizza", "$8.99", "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=800"),
+                Triple("Chicken Burger", "$6.99", "https://images.unsplash.com/photo-1568901341408-f78c8242b26b?w=800"),
+                Triple("Pasta Carbonara", "$9.99", "https://images.unsplash.com/photo-1621996346565-e3dbc44ae37b?w=800")
+            )
+
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                items(sampleOrders.size) { index ->
+                    val (name, price, image) = sampleOrders[index]
+
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(12.dp),
+                        colors = CardDefaults.cardColors(containerColor = Color.White),
+                        elevation = CardDefaults.cardElevation(4.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .padding(12.dp)
+                                .fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            // Fake image placeholder
+                            Box(
+                                modifier = Modifier
+                                    .size(64.dp)
+                                    .background(Color(0xFFFFF3E0), RoundedCornerShape(8.dp)),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text("FOOD", fontSize = 10.sp, color = Color(0xFF666666))
+                            }
+
+                            Spacer(Modifier.width(12.dp))
+
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    text = name,
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = Color.Black
+                                )
+                                Text(
+                                    text = price,
+                                    fontSize = 16.sp,
+                                    color = Color(0xFFFF6D00)
+                                )
+                            }
+
+                            // Delete button
+                            Box(
+                                modifier = Modifier
+                                    .size(48.dp)
+                                    .clip(RoundedCornerShape(24.dp))
+                                    .background(Color.Red)
+                                    .clickable { },
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Rounded.DeleteOutline,
+                                    contentDescription = "Delete",
+                                    tint = Color.White
+                                )
+                            }
+                        }
+                    }
+                }
             }
         }
     }

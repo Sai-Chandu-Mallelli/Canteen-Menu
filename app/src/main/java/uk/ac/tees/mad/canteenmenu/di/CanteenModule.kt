@@ -52,9 +52,9 @@ object CanteenModule {
     @Singleton
     fun provideCloudinary(): Cloudinary {
         val config: MutableMap<String, String> = HashMap()
-        config["cloud_name"] = "dn8ycjojw"
-        config["api_key"] = "281678982458183"
-        config["api_secret"] = "77nO2JN3hkGXB-YgGZuJOqXcA4Q"
+        config["cloud_name"] = "dux792jx1"
+        config["api_key"] = "762416657415368"
+        config["api_secret"] = "lA2D1GpovSQIfAvmVoJ_AmpvfWw"
         return Cloudinary(config)
     }
 }

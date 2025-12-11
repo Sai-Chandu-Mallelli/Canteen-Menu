@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.delay
@@ -32,6 +33,16 @@ fun Splash(navController: NavHostController, viewModel: CanteenViewModel) {
     }
 
 
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Image(painterResource(R.drawable.app_icon), contentDescription = null, modifier = Modifier.size(240.dp).clip(
+            RoundedCornerShape(55.dp)
+        ).shadow(40.dp))
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun splashDemo(){
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Image(painterResource(R.drawable.app_icon), contentDescription = null, modifier = Modifier.size(240.dp).clip(
             RoundedCornerShape(55.dp)

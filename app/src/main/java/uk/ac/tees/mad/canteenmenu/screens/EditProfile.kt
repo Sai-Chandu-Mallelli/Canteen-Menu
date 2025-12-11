@@ -21,7 +21,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import uk.ac.tees.mad.canteenmenu.CanteenViewModel
@@ -161,6 +164,111 @@ fun EditProfile(
                     .padding(horizontal = 16.dp),
                 shape = RoundedCornerShape(24.dp)
             )
+        }
+    }
+}
+
+
+@Preview(showBackground = true, name = "CanteenMenu – Edit Profile")
+@Composable
+fun EditProfilePreview() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFFFFF8F0))
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        // Top Bar (simulated)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color(0xFFFF6D00))
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = Icons.Default.ArrowBack,
+                contentDescription = "Back",
+                tint = Color.White,
+                modifier = Modifier.size(28.dp)
+            )
+            Spacer(Modifier.width(16.dp))
+            Text(
+                "Edit Profile",
+                color = Color.White,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
+
+        Spacer(Modifier.height(32.dp))
+
+        // Profile Picture
+        Box(
+            modifier = Modifier
+                .size(120.dp)
+                .clip(CircleShape)
+                .background(Color(0xFFFFF3E0)),
+            contentAlignment = Alignment.Center
+        ) {
+            Text("Photo", fontSize = 18.sp, color = Color(0xFF666666))
+        }
+
+        Spacer(Modifier.height(12.dp))
+
+        // Gallery / Camera buttons
+        Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+            TextButton(onClick = {}) {
+                Text("Gallery", color = Color(0xFFFF6D00))
+            }
+            TextButton(onClick = {}) {
+                Text("Camera", color = Color(0xFFFF6D00))
+            }
+        }
+
+        //Spacer(Modifier.height(32.dp)
+
+                // Name Field
+                OutlinedTextField(
+                value = "John Doe",
+            onValueChange = {},
+            label = { Text("Name") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            shape = RoundedCornerShape(24.dp),
+            singleLine = true
+        )
+
+
+        Spacer(Modifier.height(16.dp))
+
+        // Email Field
+        OutlinedTextField(
+            value = "john.doe@tees.ac.uk",
+            onValueChange = {},
+            label = { Text("Email") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            shape = RoundedCornerShape(24.dp),
+            singleLine = true
+        )
+
+        Spacer(Modifier.weight(1f))
+
+        // Save Button at bottom
+        Button(
+            onClick = {},
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+                .height(56.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF8A65)),
+            shape = RoundedCornerShape(12.dp)
+        ) {
+            Text("Save", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
         }
     }
 }

@@ -12,7 +12,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.PanoramaFishEye
@@ -34,6 +37,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -195,6 +199,196 @@ fun Signup(context: Context, onChange: () -> Unit, onSignUp: (name: String, emai
                     onChange()
                 }, fontWeight = FontWeight.Bold)
             }
+        }
+    }
+}
+
+@Preview(showBackground = true, name = "CanteenMenu – Login")
+@Composable
+fun LoginScreenPreview() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        // Top illustrations
+        Row(horizontalArrangement = Arrangement.Center) {
+            Box(
+                modifier = Modifier
+                    .size(80.dp)
+                    .background(Color(0xFFFFF3E0), RoundedCornerShape(12.dp)),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("Studying", fontSize = 12.sp)
+            }
+            Spacer(Modifier.width(16.dp))
+            Box(
+                modifier = Modifier
+                    .size(80.dp)
+                    .background(Color(0xFFE8F5E8), RoundedCornerShape(12.dp)),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("Raising Hand", fontSize = 12.sp)
+            }
+        }
+
+        Spacer(Modifier.height(32.dp))
+
+        Text(
+            text = "Log in to Canteen Menu",
+            fontSize = 24.sp,
+            fontWeight = FontWeight.SemiBold
+        )
+
+        Spacer(Modifier.height(32.dp))
+
+        OutlinedTextField(
+            value = "john.doe@tees.ac.uk",
+            onValueChange = {},
+            label = { Text("Email") },
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(50.dp),
+            singleLine = true
+        )
+
+        Spacer(Modifier.height(12.dp))
+
+        OutlinedTextField(
+            value = "••••••••",
+            onValueChange = {},
+            label = { Text("Password") },
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(50.dp),
+            singleLine = true,
+            visualTransformation = PasswordVisualTransformation(),
+            trailingIcon = {
+                Icon(
+                    imageVector = Icons.Rounded.RemoveRedEye,
+                    contentDescription = "Toggle visibility"
+                )
+            }
+        )
+
+        Spacer(Modifier.height(24.dp))
+
+        Button(
+            onClick = {},
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 60.dp)
+        ) {
+            Text("Login", fontSize = 18.sp)
+        }
+
+        Spacer(Modifier.height(16.dp))
+
+        Row {
+            Text("Don't have an account?")
+            Spacer(Modifier.width(8.dp))
+            Text(
+                "Sign up",
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF006400)
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true, name = "CanteenMenu – Sign Up")
+@Composable
+fun SignupScreenPreview() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Row(horizontalArrangement = Arrangement.Center) {
+            Box(
+                modifier = Modifier
+                    .size(80.dp)
+                    .background(Color(0xFFFFF3E0), RoundedCornerShape(12.dp)),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("Studying", fontSize = 12.sp)
+            }
+            Spacer(Modifier.width(16.dp))
+            Box(
+                modifier = Modifier
+                    .size(80.dp)
+                    .background(Color(0xFFE8F5E8), RoundedCornerShape(12.dp)),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("Raising Hand", fontSize = 12.sp)
+            }
+        }
+
+        Spacer(Modifier.height(32.dp))
+
+        Text(
+            text = "Sign up to Canteen Menu",
+            fontSize = 24.sp,
+            fontWeight = FontWeight.SemiBold
+        )
+
+        Spacer(Modifier.height(32.dp))
+
+        OutlinedTextField(
+            value = "Emma Wilson",
+            onValueChange = {},
+            label = { Text("Name") },
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(50.dp)
+        )
+
+        Spacer(Modifier.height(12.dp))
+
+        OutlinedTextField(
+            value = "emma@example.com",
+            onValueChange = {},
+            label = { Text("Email") },
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(50.dp)
+        )
+
+        Spacer(Modifier.height(12.dp))
+
+        OutlinedTextField(
+            value = "••••••••",
+            onValueChange = {},
+            label = { Text("Password") },
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(50.dp),
+            visualTransformation = PasswordVisualTransformation(),
+            trailingIcon = {
+                Icon(Icons.Rounded.RemoveRedEye, contentDescription = null)
+            }
+        )
+
+        Spacer(Modifier.height(24.dp))
+
+        Button(
+            onClick = {},
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 60.dp)
+        ) {
+            Text("Sign up", fontSize = 18.sp)
+        }
+
+        Spacer(Modifier.height(16.dp))
+
+        Row {
+            Text("Already have an account?")
+            Spacer(Modifier.width(8.dp))
+            Text(
+                "Log in",
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF006400)
+            )
         }
     }
 }

@@ -230,7 +230,7 @@ class CanteenViewModel @Inject constructor(
                     "file" -> {
                         val file = File(imageUri.path!!)
                         val result = cloudinary.uploader().upload(file, ObjectUtils.emptyMap())
-                        result["url"] as? String
+                        result["secure_url"] as? String
                     }
                     "content" -> {
                         context.contentResolver.openInputStream(imageUri).use { inputStream ->

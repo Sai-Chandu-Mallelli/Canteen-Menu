@@ -17,7 +17,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowBackIosNew
+import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -29,9 +29,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import uk.ac.tees.mad.canteenmenu.CanteenViewModel
@@ -76,7 +79,7 @@ fun FoodDetails(
 
             Row(modifier = Modifier.fillMaxWidth().padding(start = 8.dp, bottom = 6.dp)) {
                 Icon(
-                    Icons.Rounded.ArrowBackIosNew,
+                    Icons.Rounded.ArrowBack,
                     contentDescription = null,
                     modifier = Modifier.clickable {
                         navController.popBackStack()
@@ -153,6 +156,99 @@ fun FoodDetails(
                     )
                 }
             }
+        }
+    }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun FoodDetailsPreview_WORKS_PERFECTLY() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFFFFF8F0))
+    ) {
+        // Back button
+        Row(modifier = Modifier.padding(16.dp)) {
+            Icon(
+                imageVector = Icons.Rounded.ArrowBack,
+                contentDescription = "Back",
+                tint = Color(0xFFFF6D00),
+                modifier = Modifier.size(34.dp)
+            )
+        }
+
+        // Fake food image placeholder
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(250.dp)
+                .background(Color(0xFFFFE0B2))
+        ) {
+            Text(
+                text = "FOOD PHOTO",
+                color = Color.White,
+                fontSize = 28.sp,
+                modifier = Modifier.align(Alignment.Center)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Column(modifier = Modifier.padding(horizontal = 24.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = "Margherita Pizza",
+                    fontSize = 28.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black
+                )
+                Spacer(Modifier.width(12.dp))
+                Box(
+                    modifier = Modifier
+                        .size(16.dp)
+                        .background(Color.Green, CircleShape)
+                )
+            }
+
+            Spacer(Modifier.height(12.dp))
+
+            Text(
+                text = "$8.99",
+                fontSize = 26.sp,
+                color = Color(0xFFFF6D00),
+                fontWeight = FontWeight.Bold
+            )
+
+            Spacer(Modifier.height(24.dp))
+
+            Text("Description", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+            Spacer(Modifier.height(8.dp))
+            Text(
+                "Classic delight with 100% real mozzarella cheese, fresh tomatoes, and aromatic basil on a crispy thin crust.",
+                fontSize = 16.sp,
+                color = Color.Gray
+            )
+        }
+
+        Spacer(Modifier.weight(1f))
+
+        // Bottom Order Button
+        Button(
+            onClick = {},
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+                .height(56.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF6D00)),
+            shape = RoundedCornerShape(12.dp)
+        ) {
+            Text(
+                "Order Now - $8.99",
+                color = Color.White,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
+            )
         }
     }
 }

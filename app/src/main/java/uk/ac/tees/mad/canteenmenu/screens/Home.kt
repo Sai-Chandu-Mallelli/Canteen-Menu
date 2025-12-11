@@ -9,6 +9,8 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -21,11 +23,13 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material.icons.rounded.Wallet
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -44,8 +48,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
@@ -303,5 +309,106 @@ fun cancelDailyNotification(context: Context) {
             PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
         alarmManager.cancel(pendingIntent)
+    }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun CanteenHomeScreenPreview_FIXED() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFFFFF8F0))
+            .padding(16.dp)
+    ) {
+        // Top Bar
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Canteen Menu",
+                fontSize = 22.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = Color.Black
+            )
+            Spacer(Modifier.weight(1f))
+            Icon(
+                imageVector = androidx.compose.material.icons.Icons.Rounded.Wallet,
+                contentDescription = "Wallet",
+                tint = Color(0xFFFF6D00),
+                modifier = Modifier.size(34.dp)
+            )
+        }
+
+        Spacer(Modifier.height(16.dp))
+
+        // Daily Special
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(180.dp),
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(containerColor = Color(0xFFFFE0B2))
+        ) {
+            Row(
+                modifier = Modifier.padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(120.dp)
+                        .background(Color(0xFFFFCC80), RoundedCornerShape(12.dp)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text("PIZZA", color = Color.White, fontWeight = FontWeight.Bold)
+                }
+                Spacer(Modifier.width(16.dp))
+                Column {
+                    Text("Top Picks for You", color = Color(0xFFE65100))
+                    Text(
+                        "Margherita Pizza",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text("$8.99", color = Color(0xFF666666))
+                }
+            }
+        }
+
+        Spacer(Modifier.height(24.dp))
+
+        // Menu Items - Fixed LazyColumn
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.fillMaxSize()
+        ) {
+            items(6) { index ->
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color.White)
+                ) {
+                    Row(
+                        modifier = Modifier.padding(12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(64.dp)
+                                .background(Color(0xFFFFF3E0), RoundedCornerShape(8.dp)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text("FOOD", fontSize = 10.sp)
+                        }
+                        Spacer(Modifier.width(12.dp))
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text("Item ${index + 1}", fontWeight = FontWeight.Medium)
+                            Text("$6.99", color = Color(0xFFFF6D00))
+                        }
+                    }
+                }
+            }
+        }
     }
 }

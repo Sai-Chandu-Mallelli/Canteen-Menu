@@ -32,7 +32,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
@@ -329,5 +332,113 @@ fun NotificationOptionItem(
                 )
             )
         }
+    }
+}
+
+@Preview(showBackground = true, name = "CanteenMenu – Profile Screen")
+@Composable
+fun ProfileScreenPreview() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFFFFF8F0))
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        // Back button
+        Row(modifier = Modifier.fillMaxWidth()) {
+            Icon(
+                imageVector = Icons.Rounded.ArrowBackIosNew,
+                contentDescription = "Back",
+                tint = Color(0xFFFF6D00),
+                modifier = Modifier.size(34.dp)
+            )
+        }
+
+        Spacer(Modifier.height(32.dp))
+
+        // Profile Picture
+        Box(
+            modifier = Modifier
+                .size(120.dp)
+                .clip(CircleShape)
+                .background(Color(0xFFFFE0B2)),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = Icons.Default.Person,
+                contentDescription = "Profile",
+                tint = Color.White,
+                modifier = Modifier.size(64.dp)
+            )
+        }
+
+        Spacer(Modifier.height(16.dp))
+
+        Text(
+            text = "John Doe",
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.Black
+        )
+        Text(
+            text = "john.doe@example.com",
+            fontSize = 16.sp,
+            color = Color.Gray
+        )
+
+        Spacer(Modifier.height(32.dp))
+
+        // Profile Options
+        ProfileOptionItem("Edit Profile", Icons.Default.Edit, {})
+        ProfileOptionItem("Order History", Icons.Default.ShoppingCart, {})
+        ProfileOptionItem("Wallet", Icons.Rounded.Wallet, {})
+
+        // Notification Toggle
+        var notificationsEnabled by remember { mutableStateOf(true) }
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            shape = RoundedCornerShape(12.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.White),
+            elevation = CardDefaults.cardElevation(4.dp)
+        ) {
+            Row(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.Rounded.Notifications,
+                    contentDescription = "Notifications",
+                    tint = if (notificationsEnabled) Color(0xFFFF6D00) else Color.Gray
+                )
+                Spacer(Modifier.width(16.dp))
+                Text("Notifications", fontSize = 18.sp, color = Color.Black)
+                Spacer(Modifier.weight(1f))
+                Switch(
+                    checked = notificationsEnabled,
+                    onCheckedChange = { notificationsEnabled = it },
+                    colors = SwitchDefaults.colors(
+                        checkedThumbColor = Color(0xFFFF6D00),
+                        checkedTrackColor = Color(0xFFFFCC80)
+                    )
+                )
+            }
+        }
+
+        // Logout (red)
+        ProfileOptionItem("Logout", Icons.AutoMirrored.Filled.ExitToApp, {}, isLogout = true)
+
+        Spacer(Modifier.height(16.dp))
+        Text(
+            text = "The app will show notifications three times a day at 9:00 AM, 5:00 PM, and 8:00 PM.",
+            fontSize = 14.sp,
+            color = Color.Gray,
+            modifier = Modifier.padding(16.dp),
+            textAlign = TextAlign.Center
+        )
     }
 }

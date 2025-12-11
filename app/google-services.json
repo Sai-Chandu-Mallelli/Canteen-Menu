@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "997375426345",
-    "project_id": "canteen-menu-ec3db",
-    "storage_bucket": "canteen-menu-ec3db.firebasestorage.app"
+    "project_number": "214996590304",
+    "project_id": "canteenmenu-eb56d",
+    "storage_bucket": "canteenmenu-eb56d.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:997375426345:android:fc815cb5b7e1bfd730c138",
+        "mobilesdk_app_id": "1:214996590304:android:15437dde617dbf2cc13a85",
         "android_client_info": {
           "package_name": "uk.ac.tees.mad.canteenmenu"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyD622GyVRuwCGZdJXt6NhTUSm91sJlmHbU"
+          "current_key": "AIzaSyDH1oYZtPSt6rxxlYPACJUkxjLT0ubbNQU"
         }
       ],
       "services": {

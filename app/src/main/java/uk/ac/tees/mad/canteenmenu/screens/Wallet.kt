@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -32,10 +33,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import uk.ac.tees.mad.canteenmenu.CanteenViewModel
 import uk.ac.tees.mad.canteenmenu.ui.theme.BackgroundLight
@@ -198,5 +202,115 @@ fun QuickAddButton(amount: Int, onClick: (Int) -> Unit) {
                 )
             )
         }
+    }
+}
+
+
+@Preview(showBackground = true, name = "CanteenMenu – Wallet Screen")
+@Composable
+fun WalletScreenPreview() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFFFFF8F0))
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        // Back button
+        Row(modifier = Modifier.fillMaxWidth()) {
+            Icon(
+                imageVector = Icons.Rounded.ArrowBackIosNew,
+                contentDescription = "Back",
+                tint = Color(0xFFFF6D00),
+                modifier = Modifier.size(34.dp)
+            )
+        }
+
+        Spacer(Modifier.height(60.dp))
+
+        // Wallet Icon
+        Icon(
+            imageVector = Icons.Rounded.Wallet,
+            contentDescription = "Wallet",
+            tint = Color(0xFFFF6D00),
+            modifier = Modifier.size(120.dp)
+        )
+
+        Spacer(Modifier.height(24.dp))
+
+        Text(
+            text = "Your Balance",
+            fontSize = 18.sp,
+            color = Color(0xFF666666)
+        )
+
+        Text(
+            text = "$127.50",
+            fontSize = 48.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color(0xFFFF6D00)
+        )
+
+        Spacer(Modifier.height(48.dp))
+
+        Text(
+            text = "Add Amount",
+            fontSize = 20.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = Color.Black
+        )
+
+        Spacer(Modifier.height(24.dp))
+
+        // Quick Add Buttons
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            QuickAddButton(amount = 50) {}
+            QuickAddButton(amount = 100) {}
+            QuickAddButton(amount = 200) {}
+        }
+
+        Spacer(Modifier.height(32.dp))
+
+        // Custom Amount Card
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 32.dp),
+            shape = RoundedCornerShape(12.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.White),
+            elevation = CardDefaults.cardElevation(4.dp)
+        ) {
+            Row(
+                modifier = Modifier.padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                TextField(
+                    value = "25",
+                    onValueChange = {},
+                    label = { Text("Enter Custom Amount") },
+                    modifier = Modifier.weight(1f),
+//                    colors = TextFieldDefaults.colors(
+//                        focusedIndicatorColor = Color.Transparent,
+//                        unfocusedIndicatorColor = Color.Transparent,
+//                        containerColor = Color.Transparent
+//                    )
+                )
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Add",
+                    tint = Color(0xFFFF6D00),
+                    modifier = Modifier
+                        .size(32.dp)
+                        .clip(CircleShape)
+                        .background(Color(0xFFFFF3E0))
+                        .padding(6.dp)
+                )
+            }
+        }
+
+        Spacer(Modifier.height(40.dp))
     }
 }
